@@ -49,6 +49,9 @@ devDependencies:
   '@types/node':
     specifier: ^18.0.0
     version: 18.19.17
+  '@types/qrcode':
+    specifier: ^1.5.5
+    version: 1.5.5
   '@unocss/preset-icons':
     specifier: ^0.58.5
     version: 0.58.5
@@ -995,6 +998,12 @@ packages:
     resolution: {integrity: sha512-SzyGKgwPzuWp2SHhlpXKzCX0pIOfcI4V2eF37nNBJOhwlegQ83omtVQ1XxZpDE06V/d6AQvfQdPfnw0tRC//Ng==}
     dependencies:
       undici-types: 5.26.5
+
+  /@types/qrcode@1.5.5:
+    resolution: {integrity: sha512-CdfBi/e3Qk+3Z/fXYShipBT13OJ2fDO2Q2w5CIP5anLTLIndQG9z6P1cnm+8zCWSpm5dnxMFd/uREtb0EXuQzg==}
+    dependencies:
+      '@types/node': 18.19.17
+    dev: true
 
   /@types/web-bluetooth@0.0.20:
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}

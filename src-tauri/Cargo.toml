@@ -13,10 +13,13 @@ tauri-build = { version = "2.0.0-beta", features = [] }
 [dependencies]
 tauri = { version = "2.0.0-beta", features = [] }
 serde_json = "1.0"
-static-web-server = "2.27.0"
+static-web-server = { version = "2.27.0", features = ["directory-listing"] }
 port_check = "0.1.5"
 tauri-plugin-dialog = "2.0.0-beta.0"
 tauri-plugin-store = "2.0.0-beta.0"
+local-ip-address = "0.5.7"
+once_cell = "1.19.0"
+tokio = "1.36.0"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

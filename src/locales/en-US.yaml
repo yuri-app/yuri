@@ -1,1 +1,2 @@
-hello: hello
+tip:
+  pathExist: This directory already exists
