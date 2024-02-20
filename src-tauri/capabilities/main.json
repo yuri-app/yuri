@@ -13,6 +13,9 @@
     "resources:default",
     "menu:default",
     "tray:default",
-    "shell:allow-open"
+    "store:allow-length",
+    "store:allow-set",
+    "store:allow-save",
+    "store:allow-entries"
   ]
 }
