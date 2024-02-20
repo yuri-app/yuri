@@ -1,17 +1,17 @@
 <template>
   <div>
-    <v-btn icon="mdi-plus" @click="openDialog"></v-btn>
+    <div @click="openDialog">+</div>
     <div>
-      <v-card v-for="{ path, url, qrcode } in list" :key="path" @click="detect(path, qrcode)" :variant="qrcode ? 'flat' : 'outlined'" :title="path">
-        <v-card-text>
+      <div v-for="{ path, url, qrcode } in list" :key="path" @click="detect(path, qrcode)">
+        <div>
           <div v-if="qrcode" flex>
             <div text-5>
               {{ url }}
             </div>
             <img :src="qrcode" width="128" height="128">
           </div>
-        </v-card-text>
-      </v-card>
+        </div>
+      </div>
     </div>
   </div>
 </template>

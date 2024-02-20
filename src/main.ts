@@ -1,12 +1,13 @@
 import 'uno.css'
-import '@mdi/font/css/materialdesignicons.css'
+import './base.css'
 
 import { createApp } from "vue";
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { createPinia } from 'pinia'
+import PrimeVue from 'primevue/config';
 
 import { i18n } from '@/locales'
-import { vuetify } from '@/vuetify'
+import Lara from '@/presets/lara';
 
 import routes from '~pages'
 
@@ -23,5 +24,8 @@ createApp(App)
   .use(i18n)
   .use(router)
   .use(pinia)
-  .use(vuetify)
+  .use(PrimeVue, {
+    unstyled: true,
+    pt: Lara
+  })
   .mount("#app");
