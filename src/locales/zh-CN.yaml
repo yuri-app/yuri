@@ -1,6 +1,7 @@
 tip:
   pathExist: 目录已存在
   pathNotExist: 目录不存在
+  empty: 暂无数据
 card:
   start: 启动
   shutdown: 关闭

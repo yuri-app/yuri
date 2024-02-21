@@ -1,6 +1,7 @@
 tip:
   pathExist: This directory already exists
   pathNotExist: This directory does not exist
+  empty: No data
 card:
   start: Start
   shutdown: Shutdown

@@ -1,6 +1,6 @@
 <template>
   <div relative h-full overflow-y-auto>
-    <div space-y-4 p-4>
+    <div space-y-4 p-4 v-if="list.length">
       <Card v-for="item in list" :key="item.path">
         <template #title> {{ item.path }} </template>
         <template #content v-if="item.qrcode">
@@ -17,6 +17,7 @@
         </template>
       </Card>
     </div>
+    <empty v-else />
     <SpeedDial :model="items" direction="up" class="right-4 bottom-4 fixed" :transitionDelay="80" showIcon="pi pi-bars" hideIcon="pi pi-times" :tooltip-options="{ position: 'left', event: 'hover' }" />
   </div>
 </template>

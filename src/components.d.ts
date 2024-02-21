@@ -10,6 +10,7 @@ declare module 'vue' {
     Button: typeof import('primevue/button')['default']
     Card: typeof import('primevue/card')['default']
     Dropdown: typeof import('primevue/dropdown')['default']
+    Empty: typeof import('./components/Empty.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     NavBar: typeof import('./components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
