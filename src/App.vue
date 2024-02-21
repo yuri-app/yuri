@@ -7,9 +7,14 @@ import Toast from 'primevue/toast';
 </script>
 
 <template>
-  <router-view v-slot="{ Component }">
-    <component :is="Component" />
-  </router-view>
-  <ConfirmDialog/>
-  <Toast/>
+  <div flex h-full>
+    <nav-bar></nav-bar>
+    <main flex-1>
+      <router-view v-slot="{ Component }">
+        <component :is="Component" />
+      </router-view>
+    </main>
+  </div>
+  <ConfirmDialog />
+  <Toast />
 </template>

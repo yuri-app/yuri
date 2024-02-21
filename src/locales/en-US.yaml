@@ -13,3 +13,6 @@ toast:
     warn: warn
 menu:
   add: Add
+nav:
+  home: Home
+  setting: Setting

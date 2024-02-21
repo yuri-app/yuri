@@ -9,6 +9,7 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';
+import Ripple from 'primevue/ripple';
 
 import { i18n } from '@/locales'
 import Lara from '@/presets/lara';
@@ -30,8 +31,10 @@ createApp(App)
   .use(pinia)
   .use(PrimeVue, {
     unstyled: true,
-    pt: Lara
+    pt: Lara,
+    ripple: true
   })
   .use(ConfirmationService)
   .use(ToastService)
+  .directive('ripple', Ripple)
   .mount("#app");
