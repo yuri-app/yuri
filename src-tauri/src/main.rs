@@ -21,6 +21,7 @@ fn start_server(path: String) -> String {
             port,
             directory_listing: true,
             root: PathBuf::from(path),
+            #[cfg(windows)]
             windows_service: true,
             ..settings.general
         },
