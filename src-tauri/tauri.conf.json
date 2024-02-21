@@ -12,7 +12,7 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "title": "yuri",
         "width": 800,
         "height": 600
@@ -20,6 +20,18 @@
     ],
     "security": {
       "csp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/yuri-app/yuri/releases/latest/download/latest.json"
+      ],
+      "active": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDk4NDNDRTI0MkU5OTIxMUUKUldRZUlaa3VKTTVEbU5kNnpVL3BsV3JwWW1PMzRCZUs2SUlkQ1hIdk1NVTRsS3NIMnJQdlJjdWIK",
+      "windows": {
+        "installMode": "passive"
+      }
     }
   },
   "bundle": {
@@ -31,6 +43,18 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "publisher": "hanaTsuk1",
+    "copyright": "Copyright © 2024 yuri-app",
+    "licenseFile": "../LICENSE",
+    "windows": {
+      "nsis": {
+        "installerIcon": "icons/icon.ico",
+        "languages": [
+          "English",
+          "SimpChinese"
+        ]
+      }
+    }
   }
 }
