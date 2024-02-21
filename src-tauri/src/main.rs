@@ -32,7 +32,7 @@ fn start_server(path: String) -> String {
         server.run_server_on_rt(Some(rx), || {}).unwrap();
     });
     let mut map = SERVER_MAP.lock().unwrap();
-    let url = format!("{}:{}", host, port);
+    let url = format!("http://{}:{}", host, port);
     map.insert(url.clone(), tx);
     url
 }

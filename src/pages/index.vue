@@ -1,10 +1,10 @@
 <template>
-  <div relative h-full>
+  <div relative h-full overflow-y-auto>
     <div space-y-4 p-4>
       <Card v-for="item in list" :key="item.path">
         <template #title> {{ item.path }} </template>
         <template #content v-if="item.qrcode">
-          <a :href="`http://${item.url}`" target="_blank">{{ item.url }}</a>
+          <a :href="item.url" target="_blank">{{ item.url }}</a>
           <img :src="item.qrcode" width="128" height="128">
         </template>
         <template #footer>
@@ -17,7 +17,7 @@
         </template>
       </Card>
     </div>
-    <SpeedDial :model="items" direction="up" class="right-4 bottom-4" :transitionDelay="80" showIcon="pi pi-bars" hideIcon="pi pi-times" :tooltip-options="{ position: 'left', event: 'hover' }" />
+    <SpeedDial :model="items" direction="up" class="right-4 bottom-4 fixed" :transitionDelay="80" showIcon="pi pi-bars" hideIcon="pi pi-times" :tooltip-options="{ position: 'left', event: 'hover' }" />
   </div>
 </template>
 
@@ -104,7 +104,14 @@ function remove(dir: Directory) {
   });
 }
 
-watchOnce(() => config.value.target?.length, () => {
+const unwatch = watchImmediate(() => config.value.target?.length, (v) => {
+  if (!v) {
+    return
+  }
+  if (list.value.length) {
+    unwatch()
+    return
+  }
   list.value = config.value.target.map(path => ({
     path,
     url: '',
