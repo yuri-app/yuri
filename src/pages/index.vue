@@ -27,6 +27,7 @@ import { open } from '@tauri-apps/plugin-dialog';
 import QRCode from 'qrcode'
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
+import { exists } from '@tauri-apps/plugin-fs'
 
 import { Directory } from '@/stores/useDirectoryStore';
 
@@ -52,14 +53,11 @@ async function openDialog() {
   if (!path) {
     return
   }
-  if (exist(path)) {
+  const exist = list.value.find(i => i.path == path)
+  if (exist) {
     return toast.add({ severity: 'warn', summary: t('toast.summary.warn'), detail: t('tip.pathExist'), life: 3000 })
   }
   addDirectory(path)
-}
-
-function exist(path: string) {
-  return list.value.find(i => i.path == path)
 }
 
 async function addDirectory(path: string) {
@@ -73,6 +71,10 @@ async function addDirectory(path: string) {
 }
 
 async function activate(dir: Directory) {
+  const exist = await exists(dir.path)
+  if (!exist) {
+    return toast.add({ severity: 'error', summary: t('toast.summary.error'), detail: t('tip.pathNotExist'), life: 3000 })
+  }
   const url = await invoke<string>('start_server', { path: dir.path })
   const qrcode = await QRCode.toDataURL(url)
   dir.url = url

@@ -1,5 +1,6 @@
 tip:
   pathExist: This directory already exists
+  pathNotExist: This directory does not exist
 card:
   start: Start
   shutdown: Shutdown
@@ -11,6 +12,7 @@ toast:
   summary:
     success: Success
     warn: warn
+    error: Error
 menu:
   add: Add
 nav:

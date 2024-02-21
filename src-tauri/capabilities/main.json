@@ -18,6 +18,19 @@
     "store:allow-save",
     "store:allow-entries",
     "dialog:allow-open",
-    "shell:allow-open"
+    "shell:allow-open",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [
+        {
+          "path": "**"
+        }
+      ]
+    }
+  ],
+  "platforms": [
+    "linux",
+    "macOS",
+    "windows"
   ]
 }

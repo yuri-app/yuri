@@ -1,5 +1,6 @@
 tip:
   pathExist: 目录已存在
+  pathNotExist: 目录不存在
 card:
   start: 启动
   shutdown: 关闭
@@ -11,6 +12,7 @@ toast:
   summary:
     success: 成功
     warn: 警告
+    error: 错误
 menu:
   add: 添加
 nav:
