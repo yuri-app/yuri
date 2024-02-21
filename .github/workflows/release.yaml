@@ -58,3 +58,4 @@ jobs:
           tagName: ${{ github.ref_name }} # This only works if your workflow triggers on new tags.
           releaseName: v__VERSION__
           prerelease: ${{ contains(github.ref_name, '-') }}
+          args: -c src-tauri/tauri.conf.build.json

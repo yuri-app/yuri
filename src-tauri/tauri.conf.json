@@ -1,7 +1,7 @@
 {
-  "productName": "yuri",
+  "productName": "yuri-dev",
   "version": "../package.json",
-  "identifier": "hanaTsuk1.yuri",
+  "identifier": "hanaTsuk1.yuri.dev",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:1420",

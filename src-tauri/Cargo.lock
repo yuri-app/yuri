@@ -4321,6 +4321,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-single-instance"
+version = "2.0.0-beta.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bed001db7adac1ede384dd6cece3435d2227ee92e956b51b04474c3e75862eee"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "thiserror",
+ "windows-sys 0.52.0",
+ "zbus",
+]
+
+[[package]]
 name = "tauri-plugin-store"
 version = "2.0.0-beta.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5632,6 +5647,7 @@ dependencies = [
  "local-ip-address",
  "once_cell",
  "port_check",
+ "serde",
  "serde_json",
  "static-web-server",
  "tauri",
@@ -5639,6 +5655,7 @@ dependencies = [
  "tauri-plugin-dialog",
  "tauri-plugin-fs",
  "tauri-plugin-shell",
+ "tauri-plugin-single-instance",
  "tauri-plugin-store",
  "tokio",
 ]
