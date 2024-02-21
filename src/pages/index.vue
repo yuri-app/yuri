@@ -1,18 +1,23 @@
 <template>
-  <div>
-    <div @click="openDialog">+</div>
-    <div>
-      <div v-for="{ path, url, qrcode } in list" :key="path" @click="detect(path, qrcode)">
-        <div>
-          <div v-if="qrcode" flex>
-            <div text-5>
-              {{ url }}
-            </div>
-            <img :src="qrcode" width="128" height="128">
+  <div relative h-full>
+    <div space-y-4 p-4>
+      <Card v-for="item in list" :key="item.path">
+        <template #title> {{ item.path }} </template>
+        <template #content v-if="item.qrcode">
+          <a :href="`http://${item.url}`" target="_blank">{{ item.url }}</a>
+          <img :src="item.qrcode" width="128" height="128">
+        </template>
+        <template #footer>
+          <div space-x-2>
+            <Button v-if="item.qrcode" icon="i-mdi:power-off text-6" :label="$t('card.shutdown')" severity="secondary"
+              @click="inactivate(item)" />
+            <Button v-else icon="i-mdi:power text-6" :label="$t('card.start')" @click="activate(item)" />
+            <Button icon="i-mdi:close-thick text-6" :label="$t('card.remove')" severity="danger" @click="remove(item)" />
           </div>
-        </div>
-      </div>
+        </template>
+      </Card>
     </div>
+    <SpeedDial :model="items" direction="up" class="right-4 bottom-4" :transitionDelay="80" showIcon="pi pi-bars" hideIcon="pi pi-times" :tooltip-options="{ position: 'left', event: 'hover' }" />
   </div>
 </template>
 
@@ -20,17 +25,31 @@
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-dialog';
 import QRCode from 'qrcode'
+import { useConfirm } from "primevue/useconfirm";
+import { useToast } from 'primevue/usetoast';
+
+
+interface Directory {
+  path: string
+  url: string
+  qrcode: string
+}
 
 const { t } = useI18n()
+const confirm = useConfirm();
+const toast = useToast();
 
 const configStore = useConfigStore()
 const { config } = storeToRefs(configStore)
 
-const list = ref<Array<{
-  path: string,
-  url: string,
-  qrcode: string,
-}>>([])
+const list = ref<Array<Directory>>([])
+const items = computed(() => [
+  {
+    label: t('menu.add'),
+    icon: 'i-mdi:plus',
+    command: openDialog
+  }
+])
 
 async function openDialog() {
   const path = await open({
@@ -40,7 +59,7 @@ async function openDialog() {
     return
   }
   if (exist(path)) {
-    return t('tip.pathExist')
+    return toast.add({ severity: 'warn', summary: t('toast.summary.warn'), detail: t('tip.pathExist'), life: 3000 })
   }
   addDirectory(path)
 }
@@ -59,21 +78,30 @@ async function addDirectory(path: string) {
   })
 }
 
-async function activate(path: string) {
-  const url = await invoke<string>('start_server', { path })
+async function activate(dir: Directory) {
+  const url = await invoke<string>('start_server', { path: dir.path })
   const qrcode = await QRCode.toDataURL(url)
-  const item = list.value.find(i => i.path == path)
-  if (!item) {
-    return
-  }
-  item.url = url
-  item.qrcode = qrcode
+  dir.url = url
+  dir.qrcode = qrcode
 }
 
-function detect(path: string, qrcode: string) {
-  if (qrcode.length == 0) {
-    activate(path)
-  }
+async function inactivate(dir: Directory) {
+  await invoke('stop_server', { url: dir.url })
+  dir.url = ''
+  dir.qrcode = ''
+}
+
+function remove(dir: Directory) {
+  confirm.require({
+    message: t('dialog.remove'),
+    header: t('dialog.confirmation'),
+    accept: async () => {
+      await inactivate(dir)
+      const index = list.value.findIndex(i => i.path == dir.path)
+      list.value.splice(index, 1)
+      toast.add({ severity: 'success', summary: t('toast.summary.success'), life: 3000 })
+    },
+  });
 }
 
 watchOnce(() => config.value.target?.length, () => {

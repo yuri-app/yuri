@@ -1,2 +1,15 @@
 tip:
   pathExist: 目录已存在
+card:
+  start: 启动
+  shutdown: 关闭
+  remove: 删除
+dialog:
+  confirmation: 确认
+  remove: 确认删除吗?
+toast:
+  summary:
+    success: 成功
+    warn: 警告
+menu:
+  add: 添加

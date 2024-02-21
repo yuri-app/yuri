@@ -1,2 +1,15 @@
 tip:
   pathExist: This directory already exists
+card:
+  start: Start
+  shutdown: Shutdown
+  remove: Remove
+dialog:
+  confirmation: Confirmation
+  remove: Are you sure to remove it?
+toast:
+  summary:
+    success: Success
+    warn: warn
+menu:
+  add: Add
