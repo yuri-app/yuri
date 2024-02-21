@@ -16,3 +16,5 @@ menu:
 nav:
   home: Home
   setting: Setting
+setting:
+  locale: Language
