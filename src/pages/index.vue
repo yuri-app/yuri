@@ -28,21 +28,15 @@ import QRCode from 'qrcode'
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from 'primevue/usetoast';
 
-
-interface Directory {
-  path: string
-  url: string
-  qrcode: string
-}
+import { Directory } from '@/stores/useDirectoryStore';
 
 const { t } = useI18n()
 const confirm = useConfirm();
 const toast = useToast();
 
-const configStore = useConfigStore()
-const { config } = storeToRefs(configStore)
+const directoryStore = useDirectoryStore()
+const { list } = storeToRefs(directoryStore)
 
-const list = ref<Array<Directory>>([])
 const items = computed(() => [
   {
     label: t('menu.add'),
@@ -103,24 +97,5 @@ function remove(dir: Directory) {
     },
   });
 }
-
-const unwatch = watchImmediate(() => config.value.target?.length, (v) => {
-  if (!v) {
-    return
-  }
-  if (list.value.length) {
-    unwatch()
-    return
-  }
-  list.value = config.value.target.map(path => ({
-    path,
-    url: '',
-    qrcode: '',
-  }))
-})
-
-watch(() => list.value.length, () => {
-  config.value.target = list.value.map(i => i.path)
-})
 
 </script>
