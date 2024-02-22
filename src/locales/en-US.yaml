@@ -19,5 +19,8 @@ menu:
 nav:
   home: Home
   setting: Setting
+  about: About
 setting:
   locale: Language
+about:
+  profile: Quickly share files using a local network

@@ -31,5 +31,10 @@ const items = computed(() => [
     icon: 'i-mdi:cog',
     route: '/setting'
   },
+  {
+    label: t('nav.about'),
+    icon: 'i-mdi:information',
+    route: '/about'
+  },
 ])
 </script>
