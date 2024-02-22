@@ -24,6 +24,10 @@ Quickly share files using your local network
 + 🏗️Manage multiple shared folders at the same time
 + 🤳🏻Quick access via QR code
 
+## Usage
+
++ 📽️Play current device video on other devices
+
 ## Acknowledgement
 
 - [static-web-server](https://github.com/static-web-server/static-web-server)
