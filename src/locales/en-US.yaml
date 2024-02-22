@@ -24,7 +24,7 @@ nav:
 setting:
   locale: Language
 about:
-  profile: Quickly share files using a local network
+  profile: Quickly share files using your local network
 manual:
   step1: 1.Add the folders that need to be shared
   step2: 2.Connect other devices to the same network as the current device

@@ -15,7 +15,7 @@
 
 # Yuri
 
-Quickly share files using a local network
+Quickly share files using your local network
 
 [Download](https://github.com/yuri-app/yuri/releases/latest)
 
