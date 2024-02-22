@@ -9,21 +9,21 @@
 </p>
 
 <p align="center">
-   English
-   <a href="./README-ZH.md">中文</a>
+  <a href="./README.md">English</a>
+  中文
 </p>
 
 # Yuri
 
-Quickly share files using a local network
+使用局域网快速共享文件
 
-[Download](https://github.com/yuri-app/yuri/releases/latest)
+[下载](https://github.com/yuri-app/yuri/releases/latest)
 
-## Feature
+## 功能
 
-+ 🏗️Manage multiple shared folders at the same time
-+ 🤳🏻Quick access via QR code
++ 🏗️同时管理多个共享文件夹
++ 🤳🏻二维码快速访问
 
-## Acknowledgement
+## 感谢
 
 - [static-web-server](https://github.com/static-web-server/static-web-server)
