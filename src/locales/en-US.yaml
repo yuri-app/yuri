@@ -16,6 +16,7 @@ toast:
     error: Error
 menu:
   add: Add
+  help: Help
 nav:
   home: Home
   setting: Setting
@@ -24,3 +25,8 @@ setting:
   locale: Language
 about:
   profile: Quickly share files using a local network
+manual:
+  step1: 1.Add the folders that need to be shared
+  step2: 2.Connect other devices to the same network as the current device
+  step3: 3.Scan the QR code or enter the URL in the browser
+  tip: Browser unsupported formats cannot be used directly

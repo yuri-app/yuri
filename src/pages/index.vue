@@ -18,7 +18,16 @@
       </Card>
     </div>
     <empty v-else />
-    <SpeedDial :model="items" direction="up" class="right-4 bottom-4 fixed" :transitionDelay="80" showIcon="pi pi-bars" hideIcon="pi pi-times" :tooltip-options="{ position: 'left', event: 'hover' }" />
+    <SpeedDial :model="items" direction="up" class="right-4 bottom-4 fixed" showIcon="pi pi-bars"
+      hideIcon="pi pi-times" :tooltip-options="{ position: 'left', event: 'hover' }" />
+    <Dialog v-model:visible="helpDialogVisible" modal :header="$t('menu.help')" >
+      <div space-y-2 mb-4>
+        <div>{{ $t('manual.step1') }}</div>
+        <div>{{ $t('manual.step2') }}</div>
+        <div>{{ $t('manual.step3') }}</div>
+      </div>
+      <div text-red>{{ $t('manual.tip') }}</div>
+    </Dialog>
   </div>
 </template>
 
@@ -39,15 +48,21 @@ const toast = useToast();
 const directoryStore = useDirectoryStore()
 const { list } = storeToRefs(directoryStore)
 
+const helpDialogVisible = ref(false)
 const items = computed(() => [
   {
     label: t('menu.add'),
     icon: 'i-mdi:plus',
-    command: openDialog
-  }
+    command: openAddDirectoryDialog
+  },
+  {
+    label: t('menu.help'),
+    icon: 'i-mdi:help',
+    command: () => helpDialogVisible.value = true
+  },
 ])
 
-async function openDialog() {
+async function openAddDirectoryDialog() {
   const path = await open({
     directory: true,
   })
