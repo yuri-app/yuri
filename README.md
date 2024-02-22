@@ -28,6 +28,15 @@ Quickly share files using your local network
 
 + 📽️Play current device video on other devices
 
+## How to use
+
+> [!NOTE]
+> Browser unsupported formats cannot be used directly, such as video format mkv
+
+1. Add the folders that need to be shared
+2. Connect other devices to the same network as the current device
+3. Scan the QR code or enter the URL in the browser
+
 ## Acknowledgement
 
 - [static-web-server](https://github.com/static-web-server/static-web-server)

@@ -28,6 +28,15 @@
 
 + 📽️其他设备播放当前设备视频
 
+## 如何使用
+
+> [!NOTE]
+> 浏览器不支持的格式无法直接使用, 例如视频格式mkv
+
+1. 添加需要共享的文件夹
+2. 将其他设备和当前设备连接在同一网络下
+3. 扫描二维码或在浏览器中输入网址
+
 ## 感谢
 
 - [static-web-server](https://github.com/static-web-server/static-web-server)

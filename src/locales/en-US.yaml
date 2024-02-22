@@ -29,10 +29,10 @@ about:
   profile: Quickly share files using your local network
   checkUpdate: Check for updates
 manual:
-  step1: 1.Add the folders that need to be shared
-  step2: 2.Connect other devices to the same network as the current device
-  step3: 3.Scan the QR code or enter the URL in the browser
-  tip: Browser unsupported formats cannot be used directly
+  step1: 1. Add the folders that need to be shared
+  step2: 2. Connect other devices to the same network as the current device
+  step3: 3. Scan the QR code or enter the URL in the browser
+  tip: Browser unsupported formats cannot be used directly, such as video format mkv
 updater:
   title: Update
   content: The new version {version} has been released. Are you sure to update it?
