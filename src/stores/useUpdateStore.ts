@@ -6,8 +6,8 @@ import { useConfirm } from 'primevue/useconfirm'
 
 export const useUpdateStore = defineStore('update', () => {
   const { t } = useI18n()
-  const toast = useToast();
-  const confirm = useConfirm();
+  const toast = useToast()
+  const confirm = useConfirm()
 
   const configStore = useConfigStore()
 
@@ -44,6 +44,9 @@ export const useUpdateStore = defineStore('update', () => {
             return toast.add({ severity: 'error', summary: t('toast.summary.error'), detail: t('updater.updating'), life: 3000 })
           }
         },
+        reject: () => {
+          updating.value = false
+        }
       });
     }
     else {

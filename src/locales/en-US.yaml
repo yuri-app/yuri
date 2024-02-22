@@ -24,8 +24,10 @@ nav:
   about: About
 setting:
   locale: Language
+  checkUpdate: Check update
 about:
   profile: Quickly share files using your local network
+  checkUpdate: Check for updates
 manual:
   step1: 1.Add the folders that need to be shared
   step2: 2.Connect other devices to the same network as the current device
