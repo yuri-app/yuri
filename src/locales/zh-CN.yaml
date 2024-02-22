@@ -14,6 +14,7 @@ toast:
     success: 成功
     warn: 警告
     error: 错误
+    info: 提示
 menu:
   add: 添加
   help: 帮助
@@ -30,3 +31,9 @@ manual:
   step2: 2.将其他设备和当前设备连接在同一网络下
   step3: 3.扫描二维码或在浏览器中输入网址
   tip: 浏览器不支持的格式无法直接使用
+updater:
+  title: 更新
+  content: 新版本{version}已发布，确定更新吗?
+  checkUpdate: 拉取最新版本时出现错误
+  updating: 更新过程中出现错误
+  latest: 已经是最新版本

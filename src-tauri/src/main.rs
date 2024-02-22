@@ -5,13 +5,13 @@ use std::{collections::HashMap, path::PathBuf, sync::Mutex, thread};
 
 use once_cell::sync::Lazy;
 use static_web_server::{settings::cli::General, Server, Settings};
-use tokio::sync::watch::{channel, Sender};
 use tauri::Manager;
+use tokio::sync::watch::{channel, Sender};
 
 #[derive(Clone, serde::Serialize)]
 struct Payload {
-  args: Vec<String>,
-  cwd: String,
+    args: Vec<String>,
+    cwd: String,
 }
 
 static SERVER_MAP: Lazy<Mutex<HashMap<String, Sender<()>>>> =
@@ -57,12 +57,15 @@ fn stop_server(url: String) {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_single_instance::init(|app, argv, cwd| {
-            app.emit("single-instance", Payload { args: argv, cwd }).unwrap();
+            app.emit("single-instance", Payload { args: argv, cwd })
+                .unwrap();
             let window = app.get_webview_window("main").unwrap();
             window.show().unwrap();
         }))

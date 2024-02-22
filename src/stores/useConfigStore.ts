@@ -6,6 +6,7 @@ interface Config {
   version: string
   locale: 'zh-CN' | 'en-US'
   target: string[]
+  checkUpdate: boolean
 }
 
 const PATH = 'config.json'
@@ -20,7 +21,8 @@ export const useConfigStore = defineStore('config', () => {
       // TODO: upgrade
       version: await core.invoke('plugin:app|version'),
       locale: 'en-US',
-      target: []
+      target: [],
+      checkUpdate: false,
     }
     const len = await store.length()
     if (len == 0)

@@ -26,7 +26,8 @@
           "path": "**"
         }
       ]
-    }
+    },
+    "updater:default"
   ],
   "platforms": [
     "linux",

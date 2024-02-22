@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
+
+useUpdateStore()
 // const configStore = useConfigStore()
 
 // const { config } = storeToRefs(configStore)
