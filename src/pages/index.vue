@@ -78,7 +78,7 @@ async function openAddDirectoryDialog() {
 }
 
 async function addDirectory(path: string) {
-  const url = await invoke<string>('start_server', { path })
+  const url = await invoke<string>('start_static_server', { path })
   const qrcode = await QRCode.toDataURL(url)
   list.value.push({
     path,
@@ -92,14 +92,15 @@ async function activate(dir: Directory) {
   if (!exist) {
     return toast.add({ severity: 'error', summary: t('toast.summary.error'), detail: t('tip.pathNotExist'), life: 3000 })
   }
-  const url = await invoke<string>('start_server', { path: dir.path })
+  const url = await invoke<string>('start_static_server', { path: dir.path })
   const qrcode = await QRCode.toDataURL(url)
   dir.url = url
   dir.qrcode = qrcode
 }
 
 async function inactivate(dir: Directory) {
-  await invoke('stop_server', { url: dir.url })
+  const scope = dir.url.split('/').at(-1)
+  await invoke('shutdown_static_server', { scope })
   dir.url = ''
   dir.qrcode = ''
 }

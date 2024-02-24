@@ -3,33 +3,63 @@
 
 use std::{collections::HashMap, path::PathBuf, sync::Mutex, thread};
 
+use nanoid::nanoid;
 use once_cell::sync::Lazy;
-use static_web_server::{settings::cli::General, Server, Settings};
-use tauri::Manager;
+use serde::Serialize;
+use static_dir::static_dir;
+use static_web_server::{directory_listing, settings::cli::General, Server, Settings};
+use tauri::{Manager, State};
 use tokio::sync::watch::{channel, Sender};
+use warp::{http::Uri, Filter};
 
-#[derive(Clone, serde::Serialize)]
+static NODES: Lazy<Mutex<HashMap<String, StaticServer>>> = Lazy::new(|| Mutex::new(HashMap::new()));
+
+#[derive(Clone, Serialize)]
 struct Payload {
     args: Vec<String>,
     cwd: String,
 }
 
-static SERVER_MAP: Lazy<Mutex<HashMap<String, Sender<()>>>> =
-    Lazy::new(|| Mutex::new(HashMap::new()));
+struct StaticServer {
+    origin: String,
+    singal: Sender<()>,
+}
+
+impl StaticServer {
+    fn shutdown(&self) {
+        let _ = self.singal.send(());
+    }
+}
+
+type Scope = String;
+
+#[derive(Default)]
+struct ServerState {
+    host: String,
+    port: u16,
+}
+
+#[derive(Serialize)]
+struct ScopeResponse {
+    origin: String,
+}
 
 #[tauri::command]
-fn start_server(path: String) -> String {
-    let host = local_ip_address::local_ip().unwrap().to_string();
+fn start_static_server(path: String, server_state: State<'_, ServerState>) -> String {
+    let ServerState { host, .. } = server_state.inner();
     let port = port_check::free_local_port().unwrap();
+    let scope = nanoid!();
     let settings = Settings::get(false).unwrap();
     let server = Server::new(Settings {
         general: General {
-            host: host.clone(),
+            host: host.to_string(),
             port,
             directory_listing: true,
+            directory_listing_format: directory_listing::DirListFmt::Json,
             root: PathBuf::from(path),
             #[cfg(windows)]
             windows_service: true,
+            cors_allow_origins: "*".to_string(),
             ..settings.general
         },
         advanced: None,
@@ -39,20 +69,52 @@ fn start_server(path: String) -> String {
     thread::spawn(|| {
         server.run_server_on_rt(Some(rx), || {}).unwrap();
     });
-    let mut map = SERVER_MAP.lock().unwrap();
-    let url = format!("http://{}:{}", host, port);
-    map.insert(url.clone(), tx);
+    let mut nodes = NODES.lock().unwrap();
+    let url = format!("http://{}:{}/{}", host, server_state.port, scope);
+    nodes.insert(
+        scope.clone(),
+        StaticServer {
+            origin: format!("http://{}:{}", host, port),
+            singal: tx,
+        },
+    );
     url
 }
 
 #[tauri::command]
-fn stop_server(url: String) {
-    let mut map = SERVER_MAP.lock().unwrap();
-    let tx = map.get(&url);
-    if let Some(tx) = tx {
-        tx.send(()).unwrap();
-        map.remove(&url);
+fn shutdown_static_server(scope: Scope) {
+    let mut nodes = NODES.lock().unwrap();
+    let static_server = nodes.get(&scope);
+    if let Some(static_server) = static_server {
+        static_server.shutdown();
+        nodes.remove(&scope);
     }
+}
+
+async fn run_server(port: u16) {
+    let index_route =
+        warp::path::end().map(|| warp::reply::html(include_str!("./static/index.html")));
+    let static_route = warp::path("static").and(static_dir!("src/static"));
+    let scope_route = warp::path!("scope" / String).map(|scope| {
+        let nodes = NODES.lock().unwrap();
+        let static_server = nodes.get(&scope);
+        static_server
+            .map(|s| ScopeResponse {
+                origin: s.origin.to_string(),
+            })
+            .map_or_else(
+                || warp::reply::json(&Option::<ScopeResponse>::None),
+                |response| warp::reply::json(&Some(response)),
+            )
+    });
+    let fallback_route = warp::any().map(|| warp::redirect(Uri::from_static("/")));
+    let routes = warp::get().and(
+        index_route
+            .or(static_route)
+            .or(scope_route)
+            .or(fallback_route),
+    );
+    warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }
 
 fn main() {
@@ -69,7 +131,22 @@ fn main() {
             let window = app.get_webview_window("main").unwrap();
             window.show().unwrap();
         }))
-        .invoke_handler(tauri::generate_handler![start_server, stop_server])
+        .invoke_handler(tauri::generate_handler![
+            start_static_server,
+            shutdown_static_server
+        ])
+        .setup(|app| {
+            let host = local_ip_address::local_ip().unwrap();
+            let port = port_check::free_local_port().unwrap();
+            let state = ServerState {
+                host: host.to_string(),
+                port,
+                ..Default::default()
+            };
+            app.manage(state);
+            tauri::async_runtime::spawn(run_server(port));
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
