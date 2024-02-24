@@ -1,0 +1,3 @@
+[submodule "src/primevue-presets"]
+	path = src/primevue-presets
+	url = https://github.com/yuri-app/primevue-presets.git

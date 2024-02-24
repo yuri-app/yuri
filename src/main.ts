@@ -12,7 +12,7 @@ import ToastService from 'primevue/toastservice';
 import Ripple from 'primevue/ripple';
 
 import { i18n } from '@/locales'
-import Lara from '@/presets/lara';
+import Lara from '@/primevue-presets/lara';
 
 import routes from '~pages'
 
