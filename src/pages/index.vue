@@ -99,7 +99,11 @@ async function activate(dir: Directory) {
 }
 
 async function inactivate(dir: Directory) {
-  const scope = dir.url.split('/').at(-1)
+  const match = /:\d+\/([^/]+)\//.exec(dir.url)
+  if (!match) {
+    return
+  }
+  const scope = match[1]
   await invoke('shutdown_static_server', { scope })
   dir.url = ''
   dir.qrcode = ''
