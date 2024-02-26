@@ -70,7 +70,7 @@ fn start_static_server(path: String, server_state: State<'_, ServerState>) -> St
         server.run_server_on_rt(Some(rx), || {}).unwrap();
     });
     let mut nodes = NODES.lock().unwrap();
-    let url = format!("http://{}:{}/{}", host, server_state.port, scope);
+    let url = format!("http://{}:{}/{}/%2F", host, server_state.port, scope);
     nodes.insert(
         scope.clone(),
         StaticServer {
@@ -107,7 +107,7 @@ async fn run_server(port: u16) {
                 |response| warp::reply::json(&Some(response)),
             )
     });
-    let fallback_route = warp::any().map(|| warp::redirect(Uri::from_static("/")));
+    let fallback_route = warp::any().map(|| warp::reply::html(include_str!("./static/index.html")));
     let routes = warp::get().and(
         index_route
             .or(static_route)
