@@ -10,9 +10,9 @@ use static_dir::static_dir;
 use static_web_server::{directory_listing, settings::cli::General, Server, Settings};
 use tauri::{Manager, State};
 use tokio::sync::watch::{channel, Sender};
-use warp::{http::Uri, Filter};
+use warp::Filter;
 
-static NODES: Lazy<Mutex<HashMap<String, StaticServer>>> = Lazy::new(|| Mutex::new(HashMap::new()));
+static NODES: Lazy<Mutex<HashMap<Scope, StaticServer>>> = Lazy::new(|| Mutex::new(HashMap::new()));
 
 #[derive(Clone, Serialize)]
 struct Payload {
@@ -22,6 +22,7 @@ struct Payload {
 
 struct StaticServer {
     origin: String,
+    path: String,
     singal: Sender<()>,
 }
 
@@ -44,6 +45,17 @@ struct ScopeResponse {
     origin: String,
 }
 
+#[derive(Serialize)]
+struct RootResponse {
+    list: Vec<RootDirectory>
+}
+
+#[derive(Serialize)]
+struct RootDirectory {
+    scope: Scope,
+    path: String
+}
+
 #[tauri::command]
 fn start_static_server(path: String, server_state: State<'_, ServerState>) -> String {
     let ServerState { host, .. } = server_state.inner();
@@ -56,7 +68,7 @@ fn start_static_server(path: String, server_state: State<'_, ServerState>) -> St
             port,
             directory_listing: true,
             directory_listing_format: directory_listing::DirListFmt::Json,
-            root: PathBuf::from(path),
+            root: PathBuf::from(path.clone()),
             #[cfg(windows)]
             windows_service: true,
             cors_allow_origins: "*".to_string(),
@@ -75,6 +87,7 @@ fn start_static_server(path: String, server_state: State<'_, ServerState>) -> St
         scope.clone(),
         StaticServer {
             origin: format!("http://{}:{}", host, port),
+            path,
             singal: tx,
         },
     );
@@ -92,9 +105,17 @@ fn shutdown_static_server(scope: Scope) {
 }
 
 async fn run_server(port: u16) {
-    let index_route =
-        warp::path::end().map(|| warp::reply::html(include_str!("./static/index.html")));
     let static_route = warp::path("static").and(static_dir!("src/static"));
+    let root_route = warp::path("root").map(|| {
+        let nodes = NODES.lock().unwrap();
+        let result = RootResponse {
+            list: nodes.iter().map(|(k, v)| RootDirectory {
+            path: v.path.to_string(),
+            scope: k.to_string()
+        }).collect::<Vec<RootDirectory>>()
+        };
+        warp::reply::json(&result)
+    });
     let scope_route = warp::path!("scope" / String).map(|scope| {
         let nodes = NODES.lock().unwrap();
         let static_server = nodes.get(&scope);
@@ -107,13 +128,11 @@ async fn run_server(port: u16) {
                 |response| warp::reply::json(&Some(response)),
             )
     });
+    let api_route = warp::path("api").and(root_route.or(scope_route));
     let fallback_route = warp::any().map(|| warp::reply::html(include_str!("./static/index.html")));
-    let routes = warp::get().and(
-        index_route
-            .or(static_route)
-            .or(scope_route)
-            .or(fallback_route),
-    );
+    let routes = static_route
+            .or(api_route)
+            .or(fallback_route);
     warp::serve(routes).run(([0, 0, 0, 0], port)).await;
 }
 
