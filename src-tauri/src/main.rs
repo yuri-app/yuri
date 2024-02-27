@@ -104,6 +104,11 @@ fn shutdown_static_server(scope: Scope) {
     }
 }
 
+#[tauri::command]
+fn get_sys_locale() -> String {
+    sys_locale::get_locale().unwrap_or_else(|| String::from("en-US"))
+}
+
 async fn run_server(port: u16) {
     let static_route = warp::path("static").and(static_dir!("src/static"));
     let root_route = warp::path("root").map(|| {
@@ -152,7 +157,8 @@ fn main() {
         }))
         .invoke_handler(tauri::generate_handler![
             start_static_server,
-            shutdown_static_server
+            shutdown_static_server,
+            get_sys_locale
         ])
         .setup(|app| {
             let host = local_ip_address::local_ip().unwrap();
