@@ -69,9 +69,10 @@ fn start_static_server(path: String, server_state: State<'_, ServerState>) -> St
             directory_listing: true,
             directory_listing_format: directory_listing::DirListFmt::Json,
             root: PathBuf::from(path.clone()),
+            cors_allow_origins: "*".to_string(),
+            cache_control_headers: false,
             #[cfg(windows)]
             windows_service: true,
-            cors_allow_origins: "*".to_string(),
             ..settings.general
         },
         advanced: None,
