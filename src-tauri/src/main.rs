@@ -43,6 +43,7 @@ struct ServerState {
 #[derive(Serialize)]
 struct ScopeResponse {
     origin: String,
+    path: String
 }
 
 #[derive(Serialize)]
@@ -128,6 +129,7 @@ async fn run_server(port: u16) {
         static_server
             .map(|s| ScopeResponse {
                 origin: s.origin.to_string(),
+                path: s.path.to_string(),
             })
             .map_or_else(
                 || warp::reply::json(&Option::<ScopeResponse>::None),
