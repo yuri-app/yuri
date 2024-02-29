@@ -38,3 +38,5 @@ createApp(App)
   .use(ToastService)
   .directive('ripple', Ripple)
   .mount("#app");
+
+window.addEventListener('contextmenu', e => e.preventDefault())
