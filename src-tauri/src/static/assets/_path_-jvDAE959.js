@@ -1,1 +1,0 @@
-import{d as s,c,o as n}from"./index-B5zRwVpF.js";const o=["src"],_=s({__name:"[path]",props:{path:{}},setup(e){const t=e;return(r,a)=>(n(),c("iframe",{src:t.path,"h-screen":"","w-screen":""},null,8,o))}});export{_ as default};
