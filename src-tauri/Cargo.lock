@@ -5925,6 +5925,7 @@ dependencies = [
  "tauri-plugin-store",
  "tauri-plugin-updater",
  "tokio",
+ "tokio-util",
  "warp",
 ]
 

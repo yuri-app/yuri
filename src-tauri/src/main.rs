@@ -1,16 +1,17 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::{collections::HashMap, path::PathBuf, sync::Mutex, thread};
+use std::{collections::HashMap, convert::Infallible, path::PathBuf, sync::Mutex, thread};
 
 use nanoid::nanoid;
 use once_cell::sync::Lazy;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use static_dir::static_dir;
 use static_web_server::{directory_listing, settings::cli::General, Server, Settings};
 use tauri::{Manager, State};
 use tokio::sync::watch::{channel, Sender};
-use warp::Filter;
+use tokio_util::io::ReaderStream;
+use warp::{hyper::Body, Filter};
 
 static NODES: Lazy<Mutex<HashMap<Scope, StaticServer>>> = Lazy::new(|| Mutex::new(HashMap::new()));
 
@@ -56,6 +57,17 @@ struct RootDirectory {
     scope: Scope,
     path: String
 }
+
+#[derive(Deserialize)]
+struct DownloadQuery {
+    scope: Scope,
+    path: String
+}
+
+#[derive(Debug)]
+struct Unauthorized;
+
+impl warp::reject::Reject for Unauthorized {}
 
 #[tauri::command]
 fn start_static_server(path: String, server_state: State<'_, ServerState>) -> String {
@@ -111,6 +123,32 @@ fn get_sys_locale() -> String {
     sys_locale::get_locale().unwrap_or_else(|| String::from("en-US"))
 }
 
+pub async fn download(path: PathBuf) -> Result<warp::reply::Response, Infallible> {
+    let metadata = tokio::fs::metadata(path.clone())
+        .await
+        .unwrap();
+    let file_len = metadata.len();
+    let file = tokio::fs::File::open(path.clone())
+        .await
+        .unwrap();
+    let name = path.file_name().unwrap();
+
+    let stream = ReaderStream::new(file);
+    let body = Body::wrap_stream(stream);
+
+    let response = warp::hyper::Response::builder()
+        .status(200)
+        .header(
+            "Content-Disposition",
+            format!("attachement; filename={:?}", name),
+        )
+        .header("Content-Length", file_len)
+        .body(body)
+        .unwrap_or_default();
+
+    Ok(response)
+}
+
 async fn run_server(port: u16) {
     let static_route = warp::path("static").and(static_dir!("src/static"));
     let root_route = warp::path("root").map(|| {
@@ -136,7 +174,26 @@ async fn run_server(port: u16) {
                 |response| warp::reply::json(&Some(response)),
             )
     });
-    let api_route = warp::path("api").and(root_route.or(scope_route));
+    let download_route = warp::path!("download").and(warp::query::<DownloadQuery>()).and_then(|q: DownloadQuery| async {
+        let DownloadQuery { scope, path } = q;
+        let nodes: std::sync::MutexGuard<'_, HashMap<String, StaticServer>> = NODES.lock().unwrap();
+        let root = nodes.get(&scope).map(|s| s.path.to_string());
+        if root.is_none() {
+            return Err(warp::reject::not_found());
+        };
+        let root = PathBuf::from(root.unwrap());
+        let path = root.join(path);
+        if path.exists() {
+            if path.is_dir() {
+                Err(warp::reject::custom(Unauthorized))
+            } else {
+                Ok(path)
+            }
+        } else {
+            Err(warp::reject::not_found())
+        }
+    }).and_then(download);
+    let api_route = warp::path("api").and(root_route.or(scope_route).or(download_route));
     let fallback_route = warp::any().map(|| warp::reply::html(include_str!("./static/index.html")));
     let routes = static_route
             .or(api_route)
