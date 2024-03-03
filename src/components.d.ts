@@ -9,10 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Button: typeof import('primevue/button')['default']
     Card: typeof import('primevue/card')['default']
-    Checkbox: typeof import('primevue/checkbox')['default']
-    Chip: typeof import('primevue/chip')['default']
     Dialog: typeof import('primevue/dialog')['default']
-    Dropdown: typeof import('primevue/dropdown')['default']
     Empty: typeof import('./components/Empty.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     NavBar: typeof import('./components/NavBar.vue')['default']
