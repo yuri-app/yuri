@@ -1,1 +1,0 @@
-import{d as n,c as s,e as o,o as p}from"./index-BOCf6Vpa.js";const h=["src"],l=n({__name:"[path]",props:{path:{}},setup(t){const e=t,r=o();async function a(){try{await fetch(e.path)}catch{r.push({name:"all"})}}return a(),(c,u)=>(p(),s("iframe",{src:e.path,"h-screen":"","w-screen":""},null,8,h))}});export{l as default};
