@@ -12,8 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # platform: [macos-latest, ubuntu-20.04, windows-latest]
-        platform: [windows-latest]
+        platform: [macos-latest, ubuntu-20.04, windows-latest]
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -29,12 +28,11 @@ jobs:
           path: static
           submodules: true
 
-      # - name: Install dependencies (ubuntu only)
-      #   if: matrix.platform == 'ubuntu-20.04'
-      #   # You can remove libayatana-appindicator3-dev if you don't use the system tray feature.
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-20.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Rust setup
         uses: dtolnay/rust-toolchain@stable
@@ -63,6 +61,11 @@ jobs:
         if: matrix.platform == 'windows-latest'
         run: |
           Copy-Item -Recurse -Force -Path "static/dist/*" -Destination "src-tauri/src/static"
+
+      - name: Move static files
+        if: matrix.platform != 'windows-latest'
+        run: |
+          cp -Rf static/dist/* src-tauri/src/static/
 
       - name: Install frontend dependencies
         run: pnpm i
