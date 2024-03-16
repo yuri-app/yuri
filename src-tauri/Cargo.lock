@@ -4016,9 +4016,9 @@ dependencies = [
 
 [[package]]
 name = "static-web-server"
-version = "2.27.0"
+version = "2.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27d782425733f1ec8b6e7f51585e378d75774996192d8ac2ffa76e69225d82a4"
+checksum = "bb5286c915a4d7de959334d156e9dbd0099297f4f87987ff4b48daf3a2e19815"
 dependencies = [
  "aho-corasick",
  "anyhow",
