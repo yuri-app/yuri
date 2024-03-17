@@ -1,7 +1,7 @@
 {
   "name": "yuri",
   "private": true,
-  "version": "0.2.3-beta.1",
+  "version": "0.2.3",
   "type": "module",
   "license": "GPL-3.0-only",
   "scripts": {
